@@ -2,7 +2,7 @@
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
-const db = require ("./db.json")
+const db = require("./db.json")
 
 // Express setup
 
@@ -13,7 +13,6 @@ app.use(express.static('public'));
 // Data Parsing
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
 
 //routes and redirects
 
@@ -27,9 +26,6 @@ app.get("/api/notes", function (req, res) {
         res.json(JSON.parse(data));
     })
 });
-
-
-
 
 //Create New Notes / post
 app.post("/api/notes", function (req, res) {
@@ -51,7 +47,7 @@ app.post("/api/notes", function (req, res) {
         mainNote.push(noteBody);
         // console.log("notes:" + JSON.stringify(mainNote));
 
-        fs.writeFile("db.json", JSON.stringify(mainNote, null, 2), function (err) {
+        fs.writeFile("db.json", JSON.stringify(mainNote), function (err) {
             if (err) {
                 console.log("Error:" + err);
             }
@@ -62,7 +58,6 @@ app.post("/api/notes", function (req, res) {
         });
     });
 });;
-
 
 //Delete files on db
 app.delete("/api/notes/:id", function (req, res) {
@@ -97,11 +92,11 @@ app.delete("/api/notes/:id", function (req, res) {
 
 app.get("/notes", (req, res) => {
     res.sendFile(path.join(__dirname, "public/notes.html"));
-  });
-  
-  app.get("*", (req, res) => {
+});
+
+app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "public/index.html"));
-  });
+});
 
 
 // start server
