@@ -1,13 +1,15 @@
 // Dependencies
 const express = require("express");
 const fs = require("fs");
-const path = require("path")
+const path = require("path");
+
+const { u4: uuidv4} = require("uuid");
 
 // Express setup
 
 const app = express();
-const PORT = process.env.PORT || 8000;
-app.use(express.static('public'));
+const PORT = process.env.PORT || 8080;
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Data Parsing
 app.use(express.urlencoded({ extended: true }));
@@ -21,50 +23,50 @@ app.get("*", function (req, res) {
     res.sendFile(path.join(__dirname, "public/index.html"));
 });
 
-app.get("/notes", function(req, res) {
+app.get("/notes", function (req, res) {
     res.sendFile(path.join(__dirname, "public/notes.html"));
 })
 
-//Create New Notes
+//Create New Notes / post
 app.post("/api/notes", function (req, res) {
-    const numberID = Math.floor((Math.random() * 100))
-    const noteBody =
-    {
-        id: numberID,
-        title: req.body.title,
-        note: req.body.text,
-    };
-    console.log(noteBody);
-   
-    fs.readFile("db.json", "utf8", function (err, res){
+    // const numberID = Math.floor((Math.random() * 100))
+    var noteBody = req.body
+    noteBody.id = uuidv4();
+
+    const notes = getNotes().concat(newNote);
+    // {
+    //     id: numberID,
+    //     title: req.body.title,
+    //     note: req.body.text,
+    // };
+    // console.log(noteBody);
+
+    // fs.readFile("db.json", "utf8", function (err, res) {
+    //     if (err) {
+    //         console.log("Error:" + err);
+    //     }
+    //     const mainNote = JSON.parse(res);
+    //     console.log("mainNote" + mainNote)
+    //     mainNote.push(noteBody);
+    //     console.log("notes:" + JSON.stringify(mainNote));
+    // })
+
+    fs.writeFile("db.json", JSON.stringify(mainNote), function (err) {
         if (err) {
             console.log("Error:" + err);
         }
-        const mainNotes = JSON.parse(res);
-        //console.log("mainNotes"+mainNotes)
-        mainNotes.push(noteBody);
-        console.log("notes:" + JSON.stringify(mainNotes));
-    })
-
-    fs.writeFile("db.json", JSON.stringify(mainNotes, null, 2), function(err){
-        if (err){
-            console.log("Error:" + err);
-        }
-        else{
-            res.json(mainNotes);
+        else {
+            res.json(mainNote);
             console.log("Note saved.");
         }
     })
 
-    // noteBody.routeName = noteBody.
-    // noteBody.push(noteBody);
-    // res.json(noteBody);
 });
 
 // read files in db
 
 app.get("/api/notes", function (req, res) {
-    fs.readFile("./db.json", "utf8", function (err, res) {
+    fs.readFile("db.json", "utf8", function (err, res) {
         if (err) {
             return console.log("Error:" + err);
         }
@@ -74,10 +76,30 @@ app.get("/api/notes", function (req, res) {
 
 //Delete files on db
 app.delete("/api/notes/:id", function (req, res) {
-    fs.readFile("./db.json", "utf8", function (err, res) {
+    fs.readFile("db.json", "utf8", function (err, res) {
         if (err) {
-            return console.log ("Error:" + err);
+            return console.log("Error:" + err);
         }
+        const findNote = JSON.parse(res)
+        console.log("locate statement")
+
+        findNote.forEach(element => {
+            // console.log("element ID: " element.id);
+            // console.log("req ID: " + req.params.id);
+            if (element.id == req.params.id) {
+                findNote.splice(element, 1);
+                console.log("splice element")
+            }
+            console.log("nothing else to delete")
+        });
+
+        fs.writeFile("db.json", JSON.stringify(findNote, null, 2), function (err) {
+            if (err) {
+                console.log("Error:" + err);
+            }
+            res.json(db);
+            console.log("note deleted");
+        })
     })
 })
 
