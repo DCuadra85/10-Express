@@ -5,7 +5,6 @@ const fs = require("fs");
 const db = require("./db.json")
 
 // Express setup
-
 const app = express();
 const PORT = process.env.PORT || 8080;
 app.use(express.static('public'));
@@ -15,7 +14,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 //routes and redirects
-
 // read files in db
 
 app.get("/api/notes", function (req, res) {
@@ -34,7 +32,7 @@ app.post("/api/notes", function (req, res) {
     {
         id: numberID,
         title: req.body.title,
-        note: req.body.text,
+        text: req.body.text,
     };
     // console.log(noteBody);
 
@@ -69,8 +67,6 @@ app.delete("/api/notes/:id", function (req, res) {
         console.log("locate statement")
 
         findNote.forEach(element => {
-            // console.log("element ID: " element.id);
-            // console.log("req ID: " + req.params.id);
             if (element.id == req.params.id) {
                 findNote.splice(element, 1);
                 console.log("splice element")
@@ -88,9 +84,7 @@ app.delete("/api/notes/:id", function (req, res) {
     })
 })
 
-
 //get html files
-
 app.get("/notes", (req, res) => {
     res.sendFile(path.join(__dirname, "public/notes.html"));
 });
@@ -98,7 +92,6 @@ app.get("/notes", (req, res) => {
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "public/index.html"));
 });
-
 
 // start server
 app.listen(PORT, function () {
