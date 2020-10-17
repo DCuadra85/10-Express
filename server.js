@@ -1,7 +1,8 @@
 // Dependencies
 const express = require("express");
-const fs = require("fs");
 const path = require("path");
+const fs = require("fs");
+const db = require ("./db.json")
 
 // Express setup
 
@@ -13,17 +14,22 @@ app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Arrays TBD
 
 //routes and redirects
-//get html files
-app.get("*", function (req, res) {
-    res.sendFile(path.join(__dirname, "public/index.html"));
+
+// read files in db
+
+app.get("/api/notes", function (req, res) {
+    fs.readFile("db.json", "utf8", function (err, data) {
+        if (err) {
+            return console.log("Error:" + err);
+        }
+        res.json(JSON.parse(data));
+    })
 });
 
-app.get("/notes", function (req, res) {
-    res.sendFile(path.join(__dirname, "public/notes.html"));
-})
+
+
 
 //Create New Notes / post
 app.post("/api/notes", function (req, res) {
@@ -58,16 +64,6 @@ app.post("/api/notes", function (req, res) {
 
 });
 
-// read files in db
-
-app.get("/api/notes", function (req, res) {
-    fs.readFile("db.json", "utf8", function (err, res) {
-        if (err) {
-            return console.log("Error:" + err);
-        }
-        res.json(JSON.parse(res));
-    })
-});
 
 //Delete files on db
 app.delete("/api/notes/:id", function (req, res) {
@@ -97,6 +93,17 @@ app.delete("/api/notes/:id", function (req, res) {
         })
     })
 })
+
+//get html files
+
+app.get("/notes", (req, res) => {
+    res.sendFile(path.join(__dirname, "public/notes.html"));
+  });
+  
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "public/index.html"));
+  });
+
 
 // start server
 app.listen(PORT, function () {
