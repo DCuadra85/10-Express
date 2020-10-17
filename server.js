@@ -17,12 +17,12 @@ app.use(express.json());
 
 //routes and redirects
 //get html files
-app.get("/", function (req, res) {
-    res.sendFile(path.join(__dirname, "/develop/public/index.html"));
+app.get("*", function (req, res) {
+    res.sendFile(path.join(__dirname, "public/index.html"));
 });
 
 app.get("/notes", function(req, res) {
-    res.sendFile(path.join(__dirname, "/develop/public/notes.html"));
+    res.sendFile(path.join(__dirname, "public/notes.html"));
 })
 
 //Create New Notes
@@ -36,7 +36,7 @@ app.post("/api/notes", function (req, res) {
     };
     console.log(noteBody);
    
-    fs.readFile("./develop/db/db.json", "utf8", function (err, res){
+    fs.readFile("db.json", "utf8", function (err, res){
         if (err) {
             console.log("Error:" + err);
         }
@@ -46,7 +46,7 @@ app.post("/api/notes", function (req, res) {
         console.log("notes:" + JSON.stringify(mainNotes));
     })
 
-    fs.writeFile("./develop/db.json", JSON.stringify(mainNotes, null, 2), function(err){
+    fs.writeFile("db.json", JSON.stringify(mainNotes, null, 2), function(err){
         if (err){
             console.log("Error:" + err);
         }
@@ -60,6 +60,26 @@ app.post("/api/notes", function (req, res) {
     // noteBody.push(noteBody);
     // res.json(noteBody);
 });
+
+// read files in db
+
+app.get("/api/notes", function (req, res) {
+    fs.readFile("./db.json", "utf8", function (err, res) {
+        if (err) {
+            return console.log("Error:" + err);
+        }
+        res.json(JSON.parse(res));
+    })
+});
+
+//Delete files on db
+app.delete("/api/notes/:id", function (req, res) {
+    fs.readFile("./db.json", "utf8", function (err, res) {
+        if (err) {
+            return console.log ("Error:" + err);
+        }
+    })
+})
 
 // start server
 app.listen(PORT, function () {
