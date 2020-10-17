@@ -3,13 +3,11 @@ const express = require("express");
 const fs = require("fs");
 const path = require("path");
 
-const { u4: uuidv4} = require("uuid");
-
 // Express setup
 
 const app = express();
 const PORT = process.env.PORT || 8080;
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('public'));
 
 // Data Parsing
 app.use(express.urlencoded({ extended: true }));
@@ -29,29 +27,26 @@ app.get("/notes", function (req, res) {
 
 //Create New Notes / post
 app.post("/api/notes", function (req, res) {
-    // const numberID = Math.floor((Math.random() * 100))
-    var noteBody = req.body
-    noteBody.id = uuidv4();
-
-    const notes = getNotes().concat(newNote);
-    // {
-    //     id: numberID,
-    //     title: req.body.title,
-    //     note: req.body.text,
-    // };
+    const numberID = Math.floor((Math.random() * 100))
+    const noteBody =
+    {
+        id: numberID,
+        title: req.body.title,
+        note: req.body.text,
+    };
     // console.log(noteBody);
 
-    // fs.readFile("db.json", "utf8", function (err, res) {
-    //     if (err) {
-    //         console.log("Error:" + err);
-    //     }
-    //     const mainNote = JSON.parse(res);
-    //     console.log("mainNote" + mainNote)
-    //     mainNote.push(noteBody);
-    //     console.log("notes:" + JSON.stringify(mainNote));
-    // })
+    fs.readFile("db.json", "utf8", function (err, res) {
+        if (err) {
+            console.log("Error:" + err);
+        }
+        const mainNote = JSON.parse(res);
+        console.log("mainNote" + mainNote)
+        mainNote.push(noteBody);
+        console.log("notes:" + JSON.stringify(mainNote));
+    })
 
-    fs.writeFile("db.json", JSON.stringify(mainNote), function (err) {
+    fs.writeFile("db.json", JSON.stringify(mainNote, null, 2), function (err) {
         if (err) {
             console.log("Error:" + err);
         }
