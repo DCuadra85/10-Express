@@ -1,6 +1,6 @@
 // Dependencies
 const express = require("express");
-const { fstat } = require("fs");
+const fs = require("fs");
 const path = require("path")
 
 // Express setup
