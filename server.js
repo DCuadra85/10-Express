@@ -47,7 +47,7 @@ app.post("/api/notes", function (req, res) {
         mainNote.push(noteBody);
         // console.log("notes:" + JSON.stringify(mainNote));
 
-        fs.writeFile("db.json", JSON.stringify(mainNote), function (err) {
+        fs.writeFile("db.json", JSON.stringify(mainNote, null, 2), function (err) {
             if (err) {
                 console.log("Error:" + err);
             }
