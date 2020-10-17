@@ -42,36 +42,35 @@ app.post("/api/notes", function (req, res) {
     };
     // console.log(noteBody);
 
-    fs.readFile("db.json", "utf8", function (err, res) {
+    fs.readFile("db.json", "utf8", function (err, data) {
         if (err) {
             console.log("Error:" + err);
         }
-        const mainNote = JSON.parse(res);
-        console.log("mainNote" + mainNote)
+        const mainNote = JSON.parse(data);
+        // console.log("mainNote" + mainNote)
         mainNote.push(noteBody);
-        console.log("notes:" + JSON.stringify(mainNote));
-    })
+        // console.log("notes:" + JSON.stringify(mainNote));
 
-    fs.writeFile("db.json", JSON.stringify(mainNote, null, 2), function (err) {
-        if (err) {
-            console.log("Error:" + err);
-        }
-        else {
-            res.json(mainNote);
-            console.log("Note saved.");
-        }
-    })
-
-});
+        fs.writeFile("db.json", JSON.stringify(mainNote, null, 2), function (err) {
+            if (err) {
+                console.log("Error:" + err);
+            }
+            else {
+                res.json(mainNote);
+                console.log("Note saved.");
+            }
+        });
+    });
+});;
 
 
 //Delete files on db
 app.delete("/api/notes/:id", function (req, res) {
-    fs.readFile("db.json", "utf8", function (err, res) {
+    fs.readFile("db.json", "utf8", function (err, data) {
         if (err) {
             return console.log("Error:" + err);
         }
-        const findNote = JSON.parse(res)
+        const findNote = JSON.parse(data)
         console.log("locate statement")
 
         findNote.forEach(element => {
